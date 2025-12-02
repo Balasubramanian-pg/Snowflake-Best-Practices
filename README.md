@@ -1,6 +1,6 @@
 # Snowflake-Best-Practices
 
-Nice brief. You want a fearless brainstorm: 80 separate documents that teach, demonstrate, or package SQL scripts showing Snowflake best practices. Below I’ve thought through schemas, security, performance, governance, CI/CD, observability, operational playbooks, and reusable script libraries. Each item is a standalone document you can create, share, and iterate on.
+Below I’ve thought through schemas, security, performance, governance, CI/CD, observability, operational playbooks, and reusable script libraries. Each item is a standalone document you can create, share, and iterate on.
 
 Below the list you’ll find a short explanation of the reasoning steps I used and which items may require verification or are uncertain.
 

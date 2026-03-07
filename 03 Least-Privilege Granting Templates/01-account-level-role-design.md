@@ -1,47 +1,50 @@
-# 01-account-level-role-design
+# Account Level Role Design
 
-What is 01-account-level-role-design and why does it matter?  
-01-account-level-role-design refers to the process of creating and managing roles within an account, defining the permissions and access levels for each role. This is crucial for maintaining security, compliance, and efficient collaboration within an organization. Effective role design ensures that users have the necessary permissions to perform their tasks without compromising sensitive data or system integrity.
 
-## The Problem It Solves
-What specific problem or tension led to the need for 01-account-level-role-design?  
-The lack of clear role definitions and inconsistent permission assignments can lead to confusion, errors, and security breaches, resulting in data loss, financial damage, and reputational harm. This problem arises from the complexity of managing multiple users, roles, and permissions, especially in large or dynamic organizations.
+Account-level role design in Snowflake establishes the foundational governance architecture required to empower organizations with secure, frictionless data access while maintaining rigorous enterprise compliance.
 
-## How to Think About It
-Describe the mental model for understanding this topic.  
-To understand 01-account-level-role-design, consider it as a hierarchical structure where roles are defined based on job functions, responsibilities, and required permissions. This mental model involves analyzing the organization's needs, identifying the necessary roles, and assigning permissions that balance access with security. It requires a deep understanding of the organization's operations, security requirements, and compliance regulations.
+### Purpose
+Our goal is to build a scalable access model that aligns technical capabilities with business intent. By structuring roles thoughtfully at the account level, we eliminate friction for data consumers and ensure security is an enabler of innovation, rather than a bottleneck.
 
-## Core Truths
-List the essential principles that always apply.
-- Principle one: Roles should be based on job functions and responsibilities to ensure that users have the necessary permissions to perform their tasks.
-- Principle two: Permissions should be granted on a least-privilege basis to minimize the risk of security breaches and data loss.
-- Principle three: Roles and permissions should be regularly reviewed and updated to reflect changes in the organization, job functions, or security requirements.
+### Focus Areas
+*   **Role Hierarchy:** Structuring roles in a directed acyclic graph to ensure privileges flow logically to higher-level administrative roles.
+*   **Separation of Duties:** Distinguishing between user management, security administration, and system object creation to mitigate risk.
+*   **Least Privilege:** Ensuring users and automated systems possess only the minimum permissions necessary to execute their specific workloads.
+*   **Role Taxonomy:** Establishing a clear, predictable naming convention that maps directly to organizational functions and data domains.
 
-## What It Looks Like in Practice
-Briefly explain how 01-account-level-role-design is typically used in real situations.  
-In practice, 01-account-level-role-design involves creating a role hierarchy with clear definitions, assigning permissions to each role, and ensuring that users are assigned to the appropriate roles. This process is typically iterative, with regular reviews and updates to ensure that the role design remains effective and aligned with the organization's needs.
+> [!NOTE]  
+> A highly effective capability model separates Access Roles, which grant privileges on specific database objects, from Functional Roles, which represent business functions and are assigned directly to human or machine users.
 
-## Where People Go Wrong
-Common misunderstandings or misuses.
-- Mistake one and why it is tempting: Overly broad roles with excessive permissions, which may seem convenient but increases the risk of security breaches and data loss.
-- Mistake two and its hidden cost: Failing to regularly review and update roles and permissions, leading to outdated and ineffective role designs that compromise security and compliance.
+### Activities
+*   Design a unified custom role hierarchy that integrates cleanly with Snowflake's standard system roles.
+*   Map organizational structures and operational workflows into discrete, logical functional roles.
+*   Audit existing user permissions and systematically transition legacy grants into the structured Role-Based Access Control model.
+*   Define and configure default roles for specific workloads to optimize compute resource allocation.
 
-## When to Use It and When Not To
-Define clear boundaries.
-**Use it when**
-- Scenario one: Creating a new account or onboarding new users to ensure that roles and permissions are properly defined and assigned.
-- Scenario two: Changing job functions or responsibilities within the organization, requiring updates to roles and permissions.
+>[!CAUTION]  
+> Limit the use of the ACCOUNTADMIN role to a bare minimum of designated individuals. Routine operational, security, or data tasks must never be executed under this overarching role.
 
-**Avoid it when**
-- Scenario one: In situations where a simple, flat permission structure is sufficient, and the complexity of role design is not justified.
-- Scenario two: When the organization's size or structure is too small or dynamic to benefit from a formal role design process.
+> [!WARNING]  
+> Never grant privileges directly to users. All permissions must be routed through structured roles to prevent security sprawl and unmanageable audit complexities.
 
-## One Line to Remember
-A single sentence that captures the essence of 01-account-level-role-design.
-Effective 01-account-level-role-design ensures that roles and permissions are aligned with job functions and responsibilities, minimizing security risks while maximizing collaboration and productivity.
+### Enablers
+*   Infrastructure as Code methodologies to automate, version-control, and deploy role hierarchies predictably.
+*   Snowflake's native anchor roles (SYSADMIN, SECURITYADMIN, USERADMIN) to standardize the summit of your custom hierarchy.
+*   Dynamic data masking and row-level access policies, which reduce the need to create distinct roles for every granular data-sharing scenario.
 
-## References (Optional)
-Up to three authoritative links if deeper reading is useful.
-Role-Based Access Control (RBAC) [https://en.wikipedia.org/wiki/Role-based_access_control](https://en.wikipedia.org/wiki/Role-based_access_control)^[1]
-Identity and Access Management (IAM) [https://www.iso.org/iso-iec-27002.html](https://www.iso.org/iso-iec-27002.html)^[2]
-NIST Special Publication 800-162 [https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-162.pdf](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-162.pdf)^[3]
+> [!TIP]  
+> Provision your role hierarchy programmatically. This ensures development, testing, and production environments remain perfectly consistent and configuration drift is instantly identifiable.
+
+### Stakeholder Integration
+*   **Security and Compliance:** Partner closely to define the boundaries of access, ensuring systemic auditability across all data domains.
+*   **Data Engineering:** Collaborate to design operational roles that support robust deployment pipelines and continuous data integration.
+*   **Business Leaders:** Engage directly to understand domain-specific needs, ensuring functional roles map accurately to actual human workflows and decision-making processes.
+
+>[!IMPORTANT]  
+> All custom roles that own database objects must ultimately be granted to the SYSADMIN role. Failing to complete this inheritance loop results in orphaned objects that central administrators cannot view or manage.
+
+### Indicators of Success
+*   Accelerated time-to-productivity for newly onboarded engineers, analysts, and automated services.
+*   Zero instances of privilege escalation, orphaned data objects, or unauthorized data exposure.
+*   Clean, comprehensible audit trails that instantly map query execution back to a specific, validated business function.
+*   Significant reduction in operational support tickets related to access provisioning and permission troubleshooting.

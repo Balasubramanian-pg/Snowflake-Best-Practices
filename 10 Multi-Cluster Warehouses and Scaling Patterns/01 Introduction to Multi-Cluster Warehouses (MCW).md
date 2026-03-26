@@ -22,9 +22,79 @@ A company experiences variable query workloads and needs to optimize their wareh
 
 
 ### Code Source Execution
+In Snowflake, a “multi-cluster warehouse” is just a virtual warehouse configured with **min/max clusters** and a **scaling policy**. Think of it like a traffic system that spawns extra lanes when queries pile up, then quietly removes them when the road clears.
+
+Here’s the clean SQL to create one:
+
 ```sql
--- no snippet mapped
+CREATE WAREHOUSE my_multi_cluster_wh
+WITH
+    WAREHOUSE_SIZE = 'MEDIUM'              -- Size of each cluster
+    WAREHOUSE_TYPE = 'STANDARD'            -- STANDARD or SNOWPARK-OPTIMIZED
+    AUTO_SUSPEND = 300                     -- Suspend after 5 mins idle
+    AUTO_RESUME = TRUE                     -- Resume automatically
+    MIN_CLUSTER_COUNT = 1                  -- Minimum clusters always running
+    MAX_CLUSTER_COUNT = 5                  -- Max clusters for scaling
+    SCALING_POLICY = 'STANDARD'            -- STANDARD or ECONOMY
+    INITIALLY_SUSPENDED = TRUE;
 ```
+
+### Key levers (what actually matters)
+
+* **MIN_CLUSTER_COUNT**
+
+  * Floor capacity. Keeps baseline performance stable.
+* **MAX_CLUSTER_COUNT**
+
+  * Ceiling for concurrency bursts.
+* **SCALING_POLICY**
+
+  * `STANDARD`: aggressive scaling, better performance
+  * `ECONOMY`: slower scaling, cost-conscious
+* **AUTO_SUSPEND / AUTO_RESUME**
+
+  * Cost control switches
+
+---
+
+### Modify an existing warehouse
+
+```sql
+ALTER WAREHOUSE my_multi_cluster_wh
+SET
+    MIN_CLUSTER_COUNT = 2,
+    MAX_CLUSTER_COUNT = 8,
+    SCALING_POLICY = 'ECONOMY';
+```
+
+---
+
+### When to use multi-cluster (practical lens)
+
+Use it when:
+
+* High concurrency (many users, dashboards, APIs)
+* BI tools like Tableau or Power BI hammering the same warehouse
+* Spiky workloads with unpredictable peaks
+
+Avoid it when:
+
+* Single heavy queries dominate (scale up warehouse size instead)
+
+---
+
+### Mental model
+
+* **Warehouse size** = muscle strength
+* **Cluster count** = number of parallel workers
+* Multi-cluster = cloning workers on demand instead of bulking one worker
+
+---
+
+**Q1:** How would you decide between increasing warehouse size versus increasing cluster count for a dashboard-heavy workload?
+**Q2:** What cost patterns emerge when using STANDARD vs ECONOMY scaling in real production environments?
+**Q3:** How would you monitor and tune cluster scaling behavior using Snowflake query history or warehouse load metrics?
+
 
 ### Example Execution Logic Step-by-Step
 
